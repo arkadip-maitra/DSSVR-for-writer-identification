@@ -142,7 +142,7 @@ class Bengali_Datamodule_Pretext(nn.Module):
         return x1, x2
 
 class Model(nn.Module):
-    def __init__(self, Nh, Nw, bs = 128, ptsz = 32, pout = 512):
+    def __init__(self, Nh, Nw, bs, ptsz = 32, pout = 512):
         super().__init__()
 
         self.Nh = Nh
@@ -257,7 +257,7 @@ for epoch in bar:
     if count > early_stop:
         break
 
-plt.clf()
+
 plt.plot(train_loss)
 plt.savefig(pretrain_image_save_path)
 
@@ -352,7 +352,7 @@ class DSModel(nn.Module):
         super(DSModel, self).__init__()
 
         # encoder
-        self.f = Model(64, 128)
+        self.f = Model(64, 128, bs=batch_size)
         # classifier
         self.fc1 = nn.Linear(512, num_class, bias=True)
         self.load_state_dict(torch.load(pretrained_path, map_location='cpu'), strict=False)
@@ -401,7 +401,7 @@ def train_val(net, data_loader, train_optimizer):
 
     return total_loss / total_num, total_correct_1 / total_num * 100, total_correct_5 / total_num * 100
 
-epochs = 300
+epochs = 1000
 best_acc = 0.
 count = 0
 early_stop = 200
@@ -422,7 +422,7 @@ for epoch in bar:
     results['test_acc@1'].append(test_acc_1)
     results['test_acc@5'].append(test_acc_5)
     # save statistics
-    data_frame = pd.DataFrame(data=results, index=range(1, epoch + 1))
+    data_frame = pd.DataFrame(data=results)
     data_frame.to_csv(results_df_save_path, index_label='epoch')
     if test_acc_1 > best_acc:
         best_acc = test_acc_1
@@ -433,7 +433,7 @@ for epoch in bar:
     if count > early_stop:
         break
 
-plt.clf()
+plt.close()
 plt.plot(results['train_acc@1'])
 plt.plot(results['test_acc@1'])
 plt.savefig(finetune_image_save_path)
