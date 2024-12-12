@@ -20,14 +20,14 @@ warnings.filterwarnings("ignore")
 label_encode = preprocessing.LabelEncoder()
 trans = transforms.ToTensor()
 
-root = "/home/sysadm/Documents/BanglaWriting: A multi-purpose offline Bangla handwriting dataset/bengali_dataset"
-pretrain_save_path = "results/Bengali_NewLossFn_model.pth"
-finetune_save_path = "results/Bengali_NewLossFn_model_finetuned.pth"
-results_df_save_path = "results/Bengali_NewLossFn_model_finetune_results.csv"
-pretrain_image_save_path = "results/Bengali_NewLossFn_pretrain_loss.png"
-finetune_image_save_path = "results/Bengali_NewLossFn_finetune_loss.png"
+root = "/home/sysadm/Music/arka/handwriting/arabic_dataset/"
+pretrain_save_path = "results_arabic/Arabic_NewLossFn_model.pth"
+finetune_save_path = "results_arabic/Arabic_NewLossFn_model_finetuned.pth"
+results_df_save_path = "results_arabic/Arabic_NewLossFn_model_finetune_results_arabic.csv"
+pretrain_image_save_path = "results_arabic/Arabic_NewLossFn_pretrain_loss.png"
+finetune_image_save_path = "results_arabic/Arabic_NewLossFn_finetune_loss.png"
 
-batch_size = 128
+batch_size = 32
 
 train_dir = root+"/train"
 test_dir = root+"/test"
@@ -39,7 +39,7 @@ label_encode = LabelEncoder()
 trans = transforms.ToTensor()
 rand = transforms.RandomCrop((64,128))
 
-class Bengali_Datamodule_Pretext(nn.Module):
+class Arabic_Datamodule_Pretext(nn.Module):
     def __init__(self,dataset = train_dataset,ptsz=32):
         super().__init__()
         self.dataset = dataset
@@ -211,7 +211,7 @@ class newlossfn(nn.Module):
 
         return loss
 
-train_data = Bengali_Datamodule_Pretext(dataset=train_dataset)
+train_data = Arabic_Datamodule_Pretext(dataset=train_dataset)
 train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True, num_workers=6, pin_memory=True,
                           drop_last=True)
 
@@ -245,7 +245,7 @@ epochs = 5000
 train_losses = []
 best_loss = float("inf")
 count = 0
-early_stop = 100
+early_stop = 300
 
 bar = tqdm(range(epochs), desc=f"Training Loss: {best_loss:.4f}")
 for epoch in bar:
@@ -265,7 +265,7 @@ for epoch in bar:
 plt.plot(train_losses)
 plt.savefig(pretrain_image_save_path)
 
-class Bengali_Datamodule_Downstream(nn.Module):
+class Arabic_Datamodule_Downstream(nn.Module):
     def __init__(self,dataset = train_dataset, ptsz = 32):
         super().__init__()
         self.dataset = dataset
@@ -367,11 +367,11 @@ class DSModel(nn.Module):
         out = self.fc1(feature)
         return out
 
-train_data = Bengali_Datamodule_Downstream(dataset=train_dataset)
+train_data = Arabic_Datamodule_Downstream(dataset=train_dataset)
 train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True, num_workers=6, pin_memory=True,
                         drop_last=True)
 
-test_data = Bengali_Datamodule_Downstream(dataset=test_dataset)
+test_data = Arabic_Datamodule_Downstream(dataset=test_dataset)
 test_loader = DataLoader(test_data, batch_size=batch_size, shuffle=False, num_workers=6, pin_memory=True,
                         drop_last=True)
 
@@ -408,7 +408,7 @@ def train_val(net, data_loader, train_optimizer):
 epochs = 10000
 best_acc = 0.
 count = 0
-early_stop = 2000
+early_stop = 5000
 
 results = {'train_loss': [], 'train_acc@1': [], 'train_acc@5': [],
                'test_loss': [], 'test_acc@1': [], 'test_acc@5': []}
