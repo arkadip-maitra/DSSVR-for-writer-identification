@@ -21,11 +21,11 @@ label_encode = preprocessing.LabelEncoder()
 trans = transforms.ToTensor()
 
 root = "/home/sysadm/Music/arka/handwriting/arabic_dataset/"
-pretrain_save_path = "results_arabic/Arabic_NewLossFn_model.pth"
-finetune_save_path = "results_arabic/Arabic_NewLossFn_model_finetuned.pth"
-results_df_save_path = "results_arabic/Arabic_NewLossFn_model_finetune_results_arabic.csv"
-pretrain_image_save_path = "results_arabic/Arabic_NewLossFn_pretrain_loss.png"
-finetune_image_save_path = "results_arabic/Arabic_NewLossFn_finetune_loss.png"
+pretrain_save_path = "results_arabic/Arabic_MOCO_model.pth"
+finetune_save_path = "results_arabic/Arabic_MOCO_model_finetuned.pth"
+results_df_save_path = "results_arabic/Arabic_MOCO_model_finetune_results_arabic.csv"
+pretrain_image_save_path = "results_arabic/Arabic_MOCO_pretrain_loss.png"
+finetune_image_save_path = "results_arabic/Arabic_MOCO_finetune_loss.png"
 
 batch_size = 32
 
