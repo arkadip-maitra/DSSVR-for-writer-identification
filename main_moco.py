@@ -244,30 +244,30 @@ def train(encoder_q, encoder_k, data_loader, train_optimizer):
 
     return total_loss / total_num
 
-epochs = 5000
+# epochs = 5000
 
-train_losses = []
-best_loss = float("inf")
-count = 0
-early_stop = 300
+# train_losses = []
+# best_loss = float("inf")
+# count = 0
+# early_stop = 300
 
-bar = tqdm(range(epochs), desc=f"Training Loss: {best_loss:.4f}")
-for epoch in bar:
-    train_loss = train(model_q, model_k, train_loader, optimizer)
-    scheduler.step()
-    train_losses.append(train_loss)
-    if train_loss < best_loss:
-        best_loss = train_loss
-        torch.save(model_q.state_dict(), pretrain_save_path)
-    else:
-        count += 1
-    bar.set_description(f"Training Loss: {train_loss:.4f}")
-    if count > early_stop:
-        break
+# bar = tqdm(range(epochs), desc=f"Training Loss: {best_loss:.4f}")
+# for epoch in bar:
+#     train_loss = train(model_q, model_k, train_loader, optimizer)
+#     scheduler.step()
+#     train_losses.append(train_loss)
+#     if train_loss < best_loss:
+#         best_loss = train_loss
+#         torch.save(model_q.state_dict(), pretrain_save_path)
+#     else:
+#         count += 1
+#     bar.set_description(f"Training Loss: {train_loss:.4f}")
+#     if count > early_stop:
+#         break
 
 
-plt.plot(train_losses)
-plt.savefig(pretrain_image_save_path)
+# plt.plot(train_losses)
+# plt.savefig(pretrain_image_save_path)
 
 class Arabic_Datamodule_Downstream(nn.Module):
     def __init__(self,dataset = train_dataset, ptsz = 32):
@@ -379,7 +379,7 @@ test_data = Arabic_Datamodule_Downstream(dataset=test_dataset)
 test_loader = DataLoader(test_data, batch_size=batch_size, shuffle=False, num_workers=6, pin_memory=True,
                         drop_last=True)
 
-model_ds = DSModel(len(train_data), pretrain_save_path).cuda()
+model_ds = DSModel(82, pretrain_save_path).cuda()
 
 loss_criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model_ds.parameters(), lr=1e-5, weight_decay=1e-6)
