@@ -1,4 +1,4 @@
-Sample code for the paper '''Decorrelation-based Self-Supervised Visual Representation Learning for Writer Identification.'''
+Sample code for the paper **Decorrelation-based Self-Supervised Visual Representation Learning for Writer Identification**.
 
 ## Cite this work using
 @misc{maitra2024decorrelationbasedselfsupervisedvisualrepresentation,
