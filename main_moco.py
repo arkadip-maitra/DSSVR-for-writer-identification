@@ -20,12 +20,12 @@ warnings.filterwarnings("ignore")
 label_encode = preprocessing.LabelEncoder()
 trans = transforms.ToTensor()
 
-root = "/home/sysadm/Music/arka/handwriting/arabic_dataset/"
-pretrain_save_path = "results_arabic/Arabic_MOCO_model.pth"
-finetune_save_path = "results_arabic/Arabic_MOCO_model_finetuned.pth"
-results_df_save_path = "results_arabic/Arabic_MOCO_model_finetune_results_arabic.csv"
-pretrain_image_save_path = "results_arabic/Arabic_MOCO_pretrain_loss.png"
-finetune_image_save_path = "results_arabic/Arabic_MOCO_finetune_loss.png"
+root = "/home/sysadm/Music/arka/handwriting/bengali_rthw_data"
+pretrain_save_path = "results_rthw/RTHW_MOCO_model.pth"
+finetune_save_path = "results_rthw/RTHW_MOCO_model_finetuned.pth"
+results_df_save_path = "results_rthw/RTHW_MOCO_model_finetune_results_rthw.csv"
+pretrain_image_save_path = "results_rthw/RTHW_MOCO_pretrain_loss.png"
+finetune_image_save_path = "results_rthw/RTHW_MOCO_finetune_loss.png"
 
 batch_size = 32
 
@@ -39,7 +39,7 @@ label_encode = LabelEncoder()
 trans = transforms.ToTensor()
 rand = transforms.RandomCrop((64,128))
 
-class Arabic_Datamodule_Pretext(nn.Module):
+class RTHW_Datamodule_Pretext(nn.Module):
     def __init__(self,dataset = train_dataset,ptsz=32):
         super().__init__()
         self.dataset = dataset
@@ -182,7 +182,7 @@ class Model(nn.Module):
         x1 = self.proj2(x)
         return x, x1
 
-train_data = Arabic_Datamodule_Pretext(dataset=train_dataset)
+train_data = RTHW_Datamodule_Pretext(dataset=train_dataset)
 train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True, num_workers=6, pin_memory=True,
                           drop_last=True)
 
@@ -259,6 +259,7 @@ for epoch in bar:
     if train_loss < best_loss:
         best_loss = train_loss
         torch.save(model_q.state_dict(), pretrain_save_path)
+        count = 0
     else:
         count += 1
     bar.set_description(f"Training Loss: {train_loss:.4f}")
@@ -269,7 +270,7 @@ for epoch in bar:
 plt.plot(train_losses)
 plt.savefig(pretrain_image_save_path)
 
-class Arabic_Datamodule_Downstream(nn.Module):
+class RTHW_Datamodule_Downstream(nn.Module):
     def __init__(self,dataset = train_dataset, ptsz = 32):
         super().__init__()
         self.dataset = dataset
@@ -371,15 +372,15 @@ class DSModel(nn.Module):
         out = self.fc1(feature)
         return out
 
-train_data = Arabic_Datamodule_Downstream(dataset=train_dataset)
+train_data = RTHW_Datamodule_Downstream(dataset=train_dataset)
 train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True, num_workers=6, pin_memory=True,
                         drop_last=True)
 
-test_data = Arabic_Datamodule_Downstream(dataset=test_dataset)
+test_data = RTHW_Datamodule_Downstream(dataset=test_dataset)
 test_loader = DataLoader(test_data, batch_size=batch_size, shuffle=False, num_workers=6, pin_memory=True,
                         drop_last=True)
 
-model_ds = DSModel(len(train_data), pretrain_save_path).cuda()
+model_ds = DSModel(87, pretrain_save_path).cuda()
 
 loss_criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model_ds.parameters(), lr=1e-5, weight_decay=1e-6)
@@ -435,6 +436,7 @@ for epoch in bar:
     if test_acc_1 > best_acc:
         best_acc = test_acc_1
         torch.save(model_ds.state_dict(), finetune_save_path)
+        count = 0
     else:
         count += 1
     bar.set_description(f"Training Loss: {train_loss:.4f}")
