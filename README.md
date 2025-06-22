@@ -8,5 +8,5 @@ Sample code for the paper **Decorrelation-based Self-Supervised Visual Represent
       eprint={2410.01441}, <br>
       archivePrefix={arXiv}, <br>
       primaryClass={cs.CV}, <br>
-      url={https://arxiv.org/abs/2410.01441},  <br>
+      url={https://arxiv.org/abs/2410.01441 },  <br>
 }
